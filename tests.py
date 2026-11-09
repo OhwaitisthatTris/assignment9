@@ -1,7 +1,7 @@
 # tests.py
 # Tests for your WeightedGraph.dijkstra(), edge_exists(), and path reconstruction.
 # Do not modify the provided tests; add your own in the indicated section.
-# Modified by: 
+# Modified by: Tristan Crawford
 
 import unittest
 from weighted_graph import WeightedGraph
@@ -134,7 +134,14 @@ class TestDijkstraCityGraph2(unittest.TestCase):
             last = current
 
 
-# YOUR CODE HERE
+        self.assertTrue(g.edge_exists("Lab", "Observatory"))
+        self.assertFalse(g.edge_exists("Observatory", "Lab"))
+        parents, distances = g.dijkstra("Observatory")
+        self.assertEqual(distances, {"Observatory": 0})
+
+if__name__ = "__main__":
+    unittest.main()
+
 # ADD YOUR OWN TEST CASE
 # Prove that dijkstra() works correctly in your own test case,
 # using the methods of WeightedGraph.
