@@ -1,6 +1,6 @@
 # weighted_graph.py
 # A weighted graph stored using an adjacency list
-# Modified by:
+# Modified by: Tristan Crawford
 # Note: Please write this yourself, not using an LLM.
 from queue import PriorityQueue
 from dataclasses import dataclass
@@ -65,7 +65,22 @@ class WeightedGraph:
         parents = {start: start}
         distances = {start: 0}
         
-        # YOUR CODE HERE
+        frontier = PriorityQue()
+        frontier.put(WeightedEdge(0, start, start))
+        while not frontier.empty()
+        record = frontier.get()
+        distance = record.weight
+        current = record.to
+
+        if distance > distances(current): neighbor = edge.to
+            continue
+        for edge in self.edges_from(current):
+            neighbor = edge.to
+            new_distance = distance + edge.weight
+            if neighbor not in distance or new_distance < distances[neighbor]:
+                distances[neighbor]= new-distance
+                parents[neighbor] = current
+                frontier.put(WeightedEdge(new_distance, current, neighbor))
         
         return parents, distances
     
