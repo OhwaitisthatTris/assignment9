@@ -4,16 +4,16 @@
 # Note: Please write this yourself, not using an LLM.
 from queue import PriorityQueue
 from dataclasses import dataclass
-
+ 
 @dataclass(order=True, frozen=True)
 class WeightedEdge:
     weight: float | int
     from_: str
     to: str 
-
-
+ 
+ 
 class WeightedGraph:
-
+ 
     def __init__(self):
         self._adjacency_list = {}
         
@@ -56,7 +56,7 @@ class WeightedGraph:
                 break
             current = previous
         return path
-
+ 
     # Perform dijkstra's algorithm from *start*, looking through
     # the entire graph
     # Returns a pair containing the *parents* (how to get to each vertex)
@@ -65,22 +65,23 @@ class WeightedGraph:
         parents = {start: start}
         distances = {start: 0}
         
-        frontier = PriorityQue()
+       
+        frontier = PriorityQueue()
         frontier.put(WeightedEdge(0, start, start))
-        while not frontier.empty()
-        record = frontier.get()
-        distance = record.weight
-        current = record.to
-
-        if distance > distances(current): neighbor = edge.to
-            continue
-        for edge in self.edges_from(current):
-            neighbor = edge.to
-            new_distance = distance + edge.weight
-            if neighbor not in distance or new_distance < distances[neighbor]:
-                distances[neighbor]= new-distance
-                parents[neighbor] = current
-                frontier.put(WeightedEdge(new_distance, current, neighbor))
+        while not frontier.empty():
+            record = frontier.get()
+            distance = record.weight
+            current = record.to
+         
+            if distance > distances[current]:
+                continue
+            for edge in self.edges_from(current):
+                neighbor = edge.to
+                new_distance = distance + edge.weight
+                if neighbor not in distances or new_distance < distances[neighbor]:
+                    distances[neighbor] = new_distance
+                    parents[neighbor] = current
+                    frontier.put(WeightedEdge(new_distance, current, neighbor))
         
         return parents, distances
     
