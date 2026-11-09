@@ -5,15 +5,15 @@
 
 import unittest
 from weighted_graph import WeightedGraph
-
-
+ 
+ 
 def print_path(path):
     for i, x in enumerate(path):
         end = "" if i == len(path) - 1 else " -> "
         print(f"{x}", end=end)
     print()
-
-
+ 
+ 
 class TestDijkstraCityGraph1(unittest.TestCase):
     # DO NOT MODIFY THIS TEST CASE
     def test_city_graph_1(self):
@@ -41,13 +41,12 @@ class TestDijkstraCityGraph1(unittest.TestCase):
         g.add_edge("Atlanta", "Miami", 661)
         g.add_edge("Houston", "Miami", 1187)
         g.add_edge("Houston", "Dallas", 239)
-
+ 
         print("------cityGraph1------")
-        print(g)  # uses __str__
-
+        print(g) 
+ 
         parents, distances = g.dijkstra("New York")
-
-        # Are the distances from New York correct?
+ 
         self.assertEqual(distances["San Francisco"], 3057)
         self.assertEqual(distances["Los Angeles"], 2805)
         self.assertEqual(distances["Seattle"], 2884)
@@ -60,24 +59,23 @@ class TestDijkstraCityGraph1(unittest.TestCase):
         self.assertEqual(distances["Dallas"], 1669)
         self.assertEqual(distances["Houston"], 1698)
         self.assertEqual(distances["San Francisco"], 3057)
-
+ 
         path = g.path_map_to_path(parents, "San Francisco")
         print("------cityGraph1 path------")
         print_path(path)
-
+ 
         # Shortest path should be: New York -> Chicago -> Denver -> San Francisco
         self.assertEqual(len(path), 4)
         self.assertEqual(path[0], "New York")
         self.assertEqual(path[-1], "San Francisco")
-
+ 
         last = path[0]
         for current in path[1:]:
             self.assertTrue(g.edge_exists(last, current))
             last = current
-
-
+ 
+ 
 class TestDijkstraCityGraph2(unittest.TestCase):
-    # DO NOT MODIFY THIS TEST CASE
     def test_city_graph_2(self):
         g = WeightedGraph()
         g.add_edge("Seattle", "Chicago", 1737)
@@ -106,47 +104,96 @@ class TestDijkstraCityGraph2(unittest.TestCase):
         g.add_edge("Boston", "New York", 190)
         g.add_edge("New York", "Philadelphia", 81)
         g.add_edge("Philadelphia", "Washington", 123)
-
+ 
         print("------cityGraph2------")
         print(g)  # uses __str__
-
+ 
         parents, distances = g.dijkstra("Miami")
-
+ 
         # Are the distances from Miami correct?
         self.assertEqual(distances["Seattle"], 2929)
         self.assertEqual(distances["Chicago"], 1192)
         self.assertEqual(distances["Atlanta"], 604)
         self.assertEqual(distances["New York"], 1127)
-
+ 
         path = g.path_map_to_path(parents, "San Francisco")
         print("------cityGraph2 path------")
         print_path(path)
-
+ 
         # Shortest path should be:
         # Miami -> Houston -> Phoenix -> Riverside -> San Francisco
         self.assertEqual(len(path), 5)
         self.assertEqual(path[0], "Miami")
         self.assertEqual(path[-1], "San Francisco")
-
+ 
         last = path[0]
         for current in path[1:]:
             self.assertTrue(g.edge_exists(last, current))
             last = current
-
-
-        self.assertTrue(g.edge_exists("Lab", "Observatory"))
-        self.assertFalse(g.edge_exists("Observatory", "Lab"))
-        parents, distances = g.dijkstra("Observatory")
-        self.assertEqual(distances, {"Observatory": 0})
-
-if__name__ = "__main__":
-    unittest.main()
-
+ 
+ 
 # ADD YOUR OWN TEST CASE
 # Prove that dijkstra() works correctly in your own test case,
 # using the methods of WeightedGraph.
 # You should make up your own graph and test it. Do not reuse cityGraph1/2.
 # Look at the prior two tests as examples.
+ 
+ 
+class TestDijkstraCampusGraph(unittest.TestCase):
+    # My own test case: walking times in minutes between places on a campus
+    def test_campus_graph(self):
+        g = WeightedGraph()
+        g.add_edge("Dorm", "Cafe", 4)
+        g.add_edge("Dorm", "Library", 10)
+        g.add_edge("Dorm", "Gym", 6)
+        g.add_edge("Cafe", "Library", 5)
+        g.add_edge("Cafe", "Quad", 3)
+        g.add_edge("Library", "Lab", 7)
+        g.add_edge("Quad", "Lab", 12)
+        g.add_edge("Gym", "Quad", 8)
+        g.add_edge("Lab", "Observatory", 15, bidirectional=False)
+        g.add_vertex("Boathouse")
+ 
+        print("------campusGraph------")
+        print(g) 
+ 
+        parents, distances = g.dijkstra("Dorm")
+ 
+        self.assertEqual(distances["Dorm"], 0)
+        self.assertEqual(distances["Cafe"], 4)
+        self.assertEqual(distances["Gym"], 6)
+        self.assertEqual(distances["Library"], 9)
+        self.assertEqual(distances["Quad"], 7)
+        self.assertEqual(distances["Lab"], 16)
+        self.assertEqual(distances["Observatory"], 31)
+        self.assertNotIn("Boathouse", distances)
+        self.assertNotIn("Boathouse", parents)
+ 
+        path = g.path_map_to_path(parents, "Library")
+        print("------campusGraph path------")
+        print_path(path)
+        self.assertEqual(path, ["Dorm", "Cafe", "Library"])
+ 
+        path = g.path_map_to_path(parents, "Lab")
+        self.assertEqual(path, ["Dorm", "Cafe", "Library", "Lab"])
+ 
+        path = g.path_map_to_path(parents, "Observatory")
+        self.assertEqual(path[0], "Dorm")
+        self.assertEqual(path[-1], "Observatory")
+        last = path[0]
+        for current in path[1:]:
+            self.assertTrue(g.edge_exists(last, current))
+            last = current
+ 
+        # the shuttle only runs one way
+        self.assertTrue(g.edge_exists("Lab", "Observatory"))
+        self.assertFalse(g.edge_exists("Observatory", "Lab"))
+        parents, distances = g.dijkstra("Observatory")
+        self.assertEqual(distances, {"Observatory": 0})
+ 
+ 
+if __name__ == "__main__":
+    unittest.main()
 
 
 if __name__ == "__main__":
